@@ -5,20 +5,19 @@ using UnityEngine.UI;
 
 public class Circulo : MonoBehaviour
 {
-    public InputField massInput;
-    public InputField velocityInput;
-    public GameObject ballPrefab;
-    public Transform shootPoint;
+    public Vector2 direccion;
+    public float velocidad;
 
-    public void LaunchBall()
+    public void Inicializar(Vector2 dir, float vel)
     {
-        float mass = float.Parse(massInput.text);
-        float velocity = float.Parse(velocityInput.text);
+        direccion = dir;
+        velocidad = vel;
+    }   
 
-        GameObject ball = Instantiate(ballPrefab, shootPoint.position, Quaternion.identity);
-        Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
-        rb.mass = mass;
-        rb.velocity = shootPoint.right * velocity;
+    void Update()
+    {
+        transform.position += (Vector3)(direccion * velocidad * Time.deltaTime);
     }
 }
+
 
