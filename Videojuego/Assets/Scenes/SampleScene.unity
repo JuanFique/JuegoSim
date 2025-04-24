@@ -255,8 +255,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 748c3e9200c94d5408333748e0d860ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cannon: {fileID: 0}
-  Bala: {fileID: 0}
+  cannon: {fileID: 457192274}
+  Bala: {fileID: 1099132360}
   Fuerza: 10
 --- !u!1 &460070810
 GameObject:
@@ -560,13 +560,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 967785683}
     m_Modifications:
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: masa
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: viento.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: viento.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: velocidad
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: direccion.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: direccion.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5105572819741999801, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.15
+      value: -4.83
       objectReference: {fileID: 0}
     - target: {fileID: 5105572819741999801, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.22
+      value: 0.33
       objectReference: {fileID: 0}
     - target: {fileID: 5105572819741999801, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
       propertyPath: m_LocalPosition.z
@@ -609,6 +633,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+--- !u!1 &1099132360 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5998059441729052348, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+  m_PrefabInstance: {fileID: 1063394417}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1351832714 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5105572819741999801, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}

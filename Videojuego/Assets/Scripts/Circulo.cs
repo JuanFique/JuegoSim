@@ -1,23 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Circulo : MonoBehaviour
 {
-    public Vector2 direccion;
-    public float velocidad;
+    private Vector2 velocidad;
+    private Vector2 aceleracion;
 
-    public void Inicializar(Vector2 dir, float vel)
+    public float gravedad = -9.81f; // Hacia abajo
+    public float viento = 1f;       // Hacia la derecha
+
+    public void Inicializar(Vector2 direccionInicial, float fuerza)
     {
-        direccion = dir;
-        velocidad = vel;
-    }   
+        velocidad = direccionInicial * fuerza;
+        aceleracion = new Vector2(viento, gravedad); // constante
+    }
 
     void Update()
     {
-        transform.position += (Vector3)(direccion * velocidad * Time.deltaTime);
+        velocidad += aceleracion * Time.deltaTime;
+        transform.position += (Vector3)(velocidad * Time.deltaTime);
     }
 }
-
-
