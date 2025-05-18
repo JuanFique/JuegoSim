@@ -76,6 +76,25 @@ public class Circulo : MonoBehaviour
         {
             velocidad = Vector2.zero;
         }
+
+        Piedra[] todasPiedras = FindObjectsOfType<Piedra>();
+        foreach (Piedra piedra in todasPiedras)
+        {
+            if (piedra.VerificarColision(nuevaPos, radio))
+            {
+                Vector2 puntoImpacto = nuevaPos;
+                Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
+
+                // Aplica fuerza a la piedra
+                piedra.AplicarImpacto(puntoImpacto, fuerzaImpacto);
+
+                // Rebote del proyectil
+                Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
+                velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
+
+                break;
+            }
+        }
     }
 
     public void Inicializar(Vector2 direccionInicial, float fuerza)
