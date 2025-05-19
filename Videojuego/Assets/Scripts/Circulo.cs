@@ -17,12 +17,12 @@ public class Circulo : MonoBehaviour
 
     void Start()
     {
-        // Direcciï¿½n hacia el mouse
+        // Dirección hacia el mouse
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0;
         Vector2 direccion = (mouseWorldPos - transform.position).normalized;
 
-        // Inicializar velocidad y aceleraciï¿½n
+        // Inicializar velocidad y aceleración
         velocidad = direccion * fuerzaInicial;
         aceleracion = new Vector2(viento, gravedad);
     }
@@ -35,7 +35,7 @@ public class Circulo : MonoBehaviour
         // Mover objeto
         Vector2 nuevaPos = (Vector2)transform.position + velocidad * Time.deltaTime;
 
-        // Verificar colisiï¿½n con el piso
+        // Verificar colisión con el piso
         if (nuevaPos.y - radio <= alturaPiso)
         {
             nuevaPos.y = alturaPiso + radio;
@@ -48,7 +48,7 @@ public class Circulo : MonoBehaviour
             }
         }
 
-        // Verificar colisiï¿½n con maderas
+        // Verificar colisión con maderas
         Madera[] todasMaderas = FindObjectsOfType<Madera>();
         foreach (Madera madera in todasMaderas)
         {
@@ -95,33 +95,6 @@ public class Circulo : MonoBehaviour
                 break;
             }
         }
-        // Verificar colisiÃ³n con enemigos
-Enemy[] todosEnemigos = FindObjectsOfType<Enemy>();
-foreach (Enemy enemigo in todosEnemigos)
-{
-    float distancia = Vector2.Distance(nuevaPos, enemigo.transform.position);
-    float radioEnemigo = 0.5f; // Ajusta esto segÃºn el tamaÃ±o del sprite o collider
-
-    if (distancia < radio + radioEnemigo)
-    {
-        // Simula impacto fÃ­sico
-        Rigidbody2D rbEnemigo = enemigo.GetComponent<Rigidbody2D>();
-        if (rbEnemigo != null)
-        {
-            rbEnemigo.bodyType = RigidbodyType2D.Dynamic;
-            rbEnemigo.gravityScale = 1f;
-            rbEnemigo.AddForce(velocidad * 10f, ForceMode2D.Impulse);
-        }
-
-        // Ejecuta muerte del enemigo
-        enemigo.SendMessage("Die");
-
-        // Destruye esta pelota
-        Destroy(gameObject);
-        return; // salir del Update porque ya colisionÃ³ y fue destruida
-    }
-}
-
     }
 
     public void Inicializar(Vector2 direccionInicial, float fuerza)
