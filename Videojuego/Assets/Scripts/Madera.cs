@@ -1,62 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Madera : MonoBehaviour
 {
-    [Header("Tamaño de la madera")]
+    [Header("Tamaño visual para colisiones")]
     public float izquierda = -0.5f;
     public float abajo = -0.5f;
     public float ancho = 1f;
     public float alto = 1f;
 
-    [Header("Propiedades físicas")]
-    public float masa = 2f;
-    public float alturaPiso = -4.0f;
+    public Vector2 velocidad;
+    public float masa = 1f;
+    public float friccion = 0.98f;
+    public float energiaRebote = 0.6f;
+    public float alturaPiso = -2.0f;
 
-    private Vector2 velocidad;
-    private Vector2 fuerzaAcumulada;
+    private Vector2 aceleracion = Vector2.zero;
 
-    public float gravedad = -9.81f; 
-
-    void Update()
+    public Rect ObtenerRect()
     {
-   
-        AplicarFuerza(new Vector2(0, gravedad));
-        AplicarFisica();
-    }
-
-
-    void AplicarFisica()
-    {
-        velocidad += (fuerzaAcumulada / masa) * Time.deltaTime;
-        fuerzaAcumulada = Vector2.zero;
-
-        Vector2 movimiento = velocidad * Time.deltaTime;
-        transform.position += (Vector3)movimiento;
-
-        // Rebote con el piso
-        if (transform.position.y <= alturaPiso)
-        {
-            transform.position = new Vector2(transform.position.x, alturaPiso);
-            velocidad.y = -velocidad.y * 0.4f;
-
-            if (Mathf.Abs(velocidad.y) < 0.2f)
-            {
-                velocidad.y = 0;
-            }
-        }
-    }
-
-
-    public void AplicarFuerza(Vector2 fuerza)
-    {
-        fuerzaAcumulada += fuerza;
-    }
-
-    public void AplicarImpacto(Vector2 punto, Vector2 fuerza)
-    {
-        AplicarFuerza(fuerza);
+        return new Rect(
+            transform.position.x + izquierda,
+            transform.position.y + abajo,
+            ancho,
+            alto
+        );
     }
 
     public bool VerificarColisionPrecisa(Vector2 centro, float radio)
@@ -70,14 +37,33 @@ public class Madera : MonoBehaviour
         return distancia <= radio;
     }
 
-    Rect ObtenerRect()
+    public void AplicarImpacto(Vector2 puntoImpacto, Vector2 fuerzaImpacto)
     {
-        return new Rect(
-            transform.position.x + izquierda,
-            transform.position.y + abajo,
-            ancho,
-            alto
-        );
+        Vector2 impulso = fuerzaImpacto / masa;
+        velocidad += impulso;
+    }
+    void Update()
+    {
+        // Movimiento si tiene velocidad
+        if (velocidad.magnitude > 0.01f)
+        {
+            Vector2 nuevaPos = (Vector2)transform.position + velocidad * Time.deltaTime;
+
+            // Colisión con el piso
+            if (nuevaPos.y <= alturaPiso + alto / 2f)
+            {
+                nuevaPos.y = alturaPiso + alto / 2f;
+                velocidad.y = -velocidad.y * energiaRebote;
+                velocidad.x *= friccion;
+            }
+
+            transform.position = nuevaPos;
+            velocidad *= friccion;
+        }
+        else
+        {
+            velocidad = Vector2.zero;
+        }
     }
 
     void OnDrawGizmosSelected()

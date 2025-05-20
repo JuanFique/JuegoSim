@@ -17,66 +17,50 @@ public class Circulo : MonoBehaviour
 
     void Start()
     {
-        // Dirección hacia el mouse
         Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouseWorldPos.z = 0;
         Vector2 direccion = (mouseWorldPos - transform.position).normalized;
 
-        // Inicializar velocidad y aceleración
         velocidad = direccion * fuerzaInicial;
         aceleracion = new Vector2(viento, gravedad);
     }
 
     void Update()
     {
-        // Aplicar gravedad y viento
         velocidad += aceleracion * Time.deltaTime;
-
-        // Mover objeto
         Vector2 nuevaPos = (Vector2)transform.position + velocidad * Time.deltaTime;
 
-        // Verificar colisión con el piso
+        // COLISIÓN CON EL PISO
         if (nuevaPos.y - radio <= alturaPiso)
         {
             nuevaPos.y = alturaPiso + radio;
-            velocidad.y = -velocidad.y * energiaRebote;
-            velocidad.x *= friccionPiso;
+            if (Mathf.Abs(velocidad.y) > 0.05f)
+                velocidad.y = -velocidad.y * energiaRebote;
+            else
+                velocidad.y = 0;
 
-            if (Mathf.Abs(velocidad.y) < 0.1f)
-            {
-                velocidad.y = 0f;
-            }
+            velocidad.x *= friccionPiso;
         }
 
-        // Verificar colisión con maderas
+        // COLISIÓN CON MADERAS
         Madera[] todasMaderas = FindObjectsOfType<Madera>();
         foreach (Madera madera in todasMaderas)
         {
             if (madera.VerificarColisionPrecisa(nuevaPos, radio))
             {
                 Vector2 puntoImpacto = nuevaPos;
-                Vector2 fuerzaImpacto = velocidad * radio * 0.5f; // Factor de masa
+                Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
 
-                // Aplica impacto a la madera
                 madera.AplicarImpacto(puntoImpacto, fuerzaImpacto);
 
-                // Rebote del proyectil
                 Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
                 velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
-
-                break; // Solo un impacto por frame
+                nuevaPos += normal * (radio * 1.05f);
+                break;
             }
         }
 
-        // Aplicar movimiento
-        transform.position = nuevaPos;
-
-        // Detener si la velocidad es muy baja
-        if (velocidad.magnitude < 0.1f)
-        {
-            velocidad = Vector2.zero;
-        }
-
+        // COLISIÓN CON PIEDRAS
         Piedra[] todasPiedras = FindObjectsOfType<Piedra>();
         foreach (Piedra piedra in todasPiedras)
         {
@@ -85,16 +69,19 @@ public class Circulo : MonoBehaviour
                 Vector2 puntoImpacto = nuevaPos;
                 Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
 
-                // Aplica fuerza a la piedra
                 piedra.AplicarImpacto(puntoImpacto, fuerzaImpacto);
 
-                // Rebote del proyectil
                 Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
                 velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
-
+                nuevaPos += normal * (radio * 1.05f);
                 break;
             }
         }
+
+        transform.position = nuevaPos;
+
+        if (velocidad.magnitude < 0.05f)
+            velocidad = Vector2.zero;
     }
 
     public void Inicializar(Vector2 direccionInicial, float fuerza)
