@@ -755,7 +755,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.32}
+  m_Size: {x: 0.06, y: 0.32}
   m_EdgeRadius: 0
 --- !u!50 &360129102
 Rigidbody2D:
@@ -956,8 +956,16 @@ PrefabInstance:
       value: -4.85
       objectReference: {fileID: 0}
     - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: friccionPiso
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
       propertyPath: fuerzaInicial
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2434568532172622154, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
+      propertyPath: pasosPorFrame
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5105572819741999801, guid: 81c73e5cec5f4bc4e960b8f0805b1331, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1741,6 +1749,10 @@ PrefabInstance:
     - target: {fileID: 3459042676092140687, guid: a8ac73b9eb2e5364e92f3af4c1f884bd, type: 3}
       propertyPath: m_SortingOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4713519309666605439, guid: a8ac73b9eb2e5364e92f3af4c1f884bd, type: 3}
+      propertyPath: m_Size.x
+      value: 0.06
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3593,7 +3605,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.32}
+  m_Size: {x: 0.06, y: 0.32}
   m_EdgeRadius: 0
 --- !u!50 &1696662464
 Rigidbody2D:
@@ -4909,7 +4921,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.05, y: 0.32}
+  m_Size: {x: 0.06, y: 0.32}
   m_EdgeRadius: 0
 --- !u!114 &2085849103
 MonoBehaviour:

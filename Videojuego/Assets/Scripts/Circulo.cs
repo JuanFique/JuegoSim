@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,81 +11,114 @@ public class Circulo : MonoBehaviour
     public float radio = 0.5f;
     public float alturaPiso = -2.0f;
     public float friccionPiso = 0.9f;
+    public int pasosPorFrame = 4;
 
     [HideInInspector] public Vector2 velocidad;
     private Vector2 aceleracion;
 
+    private bool impactoDetectado = false;
+    public bool esInstanciado = false; 
+
     void Start()
     {
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouseWorldPos.z = 0;
-        Vector2 direccion = (mouseWorldPos - transform.position).normalized;
+        if (esInstanciado)
+        {
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPos.z = 0;
+            Vector2 direccion = (mouseWorldPos - transform.position).normalized;
 
-        velocidad = direccion * fuerzaInicial;
-        aceleracion = new Vector2(viento, gravedad);
+            velocidad = direccion * fuerzaInicial;
+            aceleracion = new Vector2(viento, gravedad);
+        }
     }
 
     void Update()
     {
-        velocidad += aceleracion * Time.deltaTime;
-        Vector2 nuevaPos = (Vector2)transform.position + velocidad * Time.deltaTime;
+        if (velocidad == Vector2.zero) return;
 
-        // COLISIÓN CON EL PISO
-        if (nuevaPos.y - radio <= alturaPiso)
+        float dt = Time.deltaTime / pasosPorFrame;
+
+        for (int i = 0; i < pasosPorFrame; i++)
         {
-            nuevaPos.y = alturaPiso + radio;
-            if (Mathf.Abs(velocidad.y) > 0.05f)
-                velocidad.y = -velocidad.y * energiaRebote;
-            else
-                velocidad.y = 0;
+            velocidad += aceleracion * dt;
+            Vector2 nuevaPos = (Vector2)transform.position + velocidad * dt;
 
-            velocidad.x *= friccionPiso;
-        }
-
-        // COLISIÓN CON MADERAS
-        Madera[] todasMaderas = FindObjectsOfType<Madera>();
-        foreach (Madera madera in todasMaderas)
-        {
-            if (madera.VerificarColisionPrecisa(nuevaPos, radio))
+            // COLISIÃ“N CON EL PISO
+            if (nuevaPos.y - radio <= alturaPiso)
             {
-                Vector2 puntoImpacto = nuevaPos;
-                Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
+                nuevaPos.y = alturaPiso + radio;
+                if (Mathf.Abs(velocidad.y) > 0.05f)
+                    velocidad.y = -velocidad.y * energiaRebote;
+                else
+                    velocidad.y = 0;
 
-                madera.AplicarImpacto(puntoImpacto, fuerzaImpacto);
+                velocidad.x *= friccionPiso;
 
-                Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
-                velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
-                nuevaPos += normal * (radio * 1.05f);
-                break;
+                if (esInstanciado && !impactoDetectado) RegistrarImpacto();
             }
-        }
 
-        // COLISIÓN CON PIEDRAS
-        Piedra[] todasPiedras = FindObjectsOfType<Piedra>();
-        foreach (Piedra piedra in todasPiedras)
-        {
-            if (piedra.VerificarColision(nuevaPos, radio))
+            // COLISIÃ“N CON MADERAS
+            Madera[] todasMaderas = FindObjectsOfType<Madera>();
+            foreach (Madera madera in todasMaderas)
             {
-                Vector2 puntoImpacto = nuevaPos;
-                Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
+                if (madera.VerificarColisionPrecisa(nuevaPos, radio))
+                {
+                    Vector2 puntoImpacto = nuevaPos;
+                    Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
 
-                piedra.AplicarImpacto(puntoImpacto, fuerzaImpacto);
+                    madera.AplicarImpacto(puntoImpacto, fuerzaImpacto);
 
-                Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
-                velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
-                nuevaPos += normal * (radio * 1.05f);
-                break;
+                    Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
+                    velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
+                    nuevaPos += normal * (radio * 1.05f);
+
+                    if (esInstanciado && !impactoDetectado) RegistrarImpacto();
+                    break;
+                }
             }
+
+            // COLISIÃ“N CON PIEDRAS
+            Piedra[] todasPiedras = FindObjectsOfType<Piedra>();
+            foreach (Piedra piedra in todasPiedras)
+            {
+                if (piedra.VerificarColision(nuevaPos, radio))
+                {
+                    Vector2 puntoImpacto = nuevaPos;
+                    Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
+
+                    piedra.AplicarImpacto(puntoImpacto, fuerzaImpacto);
+
+                    Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
+                    velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
+                    nuevaPos += normal * (radio * 1.05f);
+
+                    if (esInstanciado && !impactoDetectado) RegistrarImpacto();
+                    break;
+                }
+            }
+
+            transform.position = nuevaPos;
+
+            if (velocidad.magnitude < 0.05f)
+                velocidad = Vector2.zero;
         }
-
-        transform.position = nuevaPos;
-
-        if (velocidad.magnitude < 0.05f)
-            velocidad = Vector2.zero;
     }
 
     public void Inicializar(Vector2 direccionInicial, float fuerza)
     {
         velocidad = direccionInicial.normalized * fuerza;
+        aceleracion = new Vector2(viento, gravedad);
+        esInstanciado = true;
+    }
+
+    private void RegistrarImpacto()
+    {
+        impactoDetectado = true;
+        Invoke("Destruir", 5f);
+    }
+
+    private void Destruir()
+    {
+        Destroy(gameObject);
     }
 }
