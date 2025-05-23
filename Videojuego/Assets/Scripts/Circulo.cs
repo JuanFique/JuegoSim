@@ -96,6 +96,25 @@ public class Circulo : MonoBehaviour
                     break;
                 }
             }
+            // COLISIÓN CON HIELO
+            hielo[] todosHielos = FindObjectsOfType<hielo>();
+            foreach (hielo hielo in todosHielos)
+            {
+                if (hielo.VerificarColisionPrecisa(nuevaPos, radio))
+                {
+                    Vector2 puntoImpacto = nuevaPos;
+                    Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
+
+                    hielo.AplicarImpacto(puntoImpacto, fuerzaImpacto);
+
+                    Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
+                    velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
+                    nuevaPos += normal * (radio * 1.05f);
+
+                    if (esInstanciado && !impactoDetectado) RegistrarImpacto();
+                    break;
+                }
+            }
 
             transform.position = nuevaPos;
 

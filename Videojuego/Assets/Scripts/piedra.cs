@@ -9,7 +9,7 @@ public class Piedra : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 1f;
-        rb.mass = 3f; // MÁS pesada
+        rb.mass = 3f; // Más pesada que la madera
     }
 
     public void AplicarImpacto(Vector2 puntoImpacto, Vector2 fuerza)
