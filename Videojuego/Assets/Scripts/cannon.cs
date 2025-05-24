@@ -32,8 +32,12 @@ public class cañon : MonoBehaviour
         {
             _predictionPointArray[i] = Instantiate(_predictPoint, SpawnPoint.position, Quaternion.identity);
         }
+        GameStateManager.Instance.OnGameStateChanged += OnGameStateChanged;
     }
-
+    private void OnDestroy()
+    {
+        GameStateManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+    }
     void Update()
 {
     Vector2 mouseWorldPoint = cam.ScreenToWorldPoint(Input.mousePosition);
@@ -100,5 +104,10 @@ public class cañon : MonoBehaviour
             _predictionPointArray[i].SetActive(false);
         }
     }
+
+    private void OnGameStateChanged(GameState newGameState)
+    {
+        enabled = newGameState == GameState.Gameplay;
+    }    
 }
 
