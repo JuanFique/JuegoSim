@@ -21,15 +21,7 @@ public class Circulo : MonoBehaviour
 
     void Start()
     {
-        if (esInstanciado)
-        {
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPos.z = 0;
-            Vector2 direccion = (mouseWorldPos - transform.position).normalized;
-
-            velocidad = direccion * fuerzaInicial;
-            aceleracion = new Vector2(viento, gravedad);
-        }
+ 
     }
 
     void Update()
@@ -115,6 +107,30 @@ public class Circulo : MonoBehaviour
                     break;
                 }
             }
+            
+// COLISIÓN CON ENEMIGOS
+            EnemigoFisico[] todosEnemigos = FindObjectsOfType<EnemigoFisico>();
+            foreach (EnemigoFisico enemigo in todosEnemigos)
+            {
+                float distancia = Vector2.Distance(nuevaPos, enemigo.transform.position);
+                float umbralColision = radio + 0.5f;
+
+                if (distancia < umbralColision)
+                {
+                    Vector2 puntoImpacto = nuevaPos;
+                    Vector2 fuerzaImpacto = velocidad * radio * 0.5f;
+
+                    enemigo.RecibirGolpeDesdeBala(fuerzaImpacto);
+
+                    Vector2 normal = ((Vector2)transform.position - puntoImpacto).normalized;
+                    velocidad = Vector2.Reflect(velocidad, normal) * 0.7f;
+                    nuevaPos += normal * (radio * 1.05f);
+
+                    if (esInstanciado && !impactoDetectado) RegistrarImpacto();
+                    break;
+                }
+            }
+
 
             transform.position = nuevaPos;
 
