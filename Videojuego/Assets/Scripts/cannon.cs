@@ -18,6 +18,8 @@ public class cañon : MonoBehaviour
     private GameObject[] _predictionPointArray;
     [SerializeField] private Transform SpawnPoint;
     [SerializeField] private float viento = 1f;
+    [SerializeField] private AudioSource shootAudioSource;
+
 
     private float fuerzaMin = 5f;
     private float fuerzaMax = 20f;
@@ -74,7 +76,8 @@ public class cañon : MonoBehaviour
         cargandoFuerza = false;
         GameObject balaS = Instantiate(Bala, SpawnPoint.position, Quaternion.identity);
         balaS.GetComponent<Circulo>().Inicializar(direction.normalized, fuerzaActual);
-    }
+        shootAudioSource.Play();
+        }
 }
 
     private void UpdatePrediction(Vector2 aimDirection, float fuerza)
