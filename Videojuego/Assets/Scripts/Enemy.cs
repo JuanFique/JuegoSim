@@ -68,7 +68,22 @@ public class EnemigoFisico : MonoBehaviour
             {
                 if (collision.gameObject != ultimoObjetoGolpeado || Time.time - tiempoUltimoGolpe > cooldownEntreGolpes)
                 {
-                    vida -= 10f;
+                    float danio = 10f; // valor por defecto
+
+                    if (collision.gameObject.GetComponent<Madera>() != null)
+                    {
+                        danio = 10f;
+                    }
+                    else if (collision.gameObject.GetComponent<Piedra>() != null)
+                    {
+                        danio = 15f;
+                    }
+                    else if (collision.gameObject.GetComponent<hielo>() != null)
+                    {
+                        danio = 2f;
+                    }
+
+                    vida -= danio;
                     ultimoObjetoGolpeado = collision.gameObject;
                     tiempoUltimoGolpe = Time.time;
                 }
@@ -87,7 +102,7 @@ public class EnemigoFisico : MonoBehaviour
     {
         if (vida <= 0) return;
 
-        vida -=50f;
+        vida -= 50f;
 
         sr.sprite = spriteTumbado;
         fueGolpeadoEsteFrame = true;
