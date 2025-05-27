@@ -1,20 +1,24 @@
 using System.Collections;
 using UnityEngine;
 
-public class EnemigosHandler : MonoBehaviour
+public class GameController : MonoBehaviour
 {
-    [SerializeField] private Transform contenedorDeEnemigos; // "Enemys"
-    [SerializeField] private Canvas succesCanva;             // "End level"
-    [SerializeField] private AudioClip levelPassed;
-    [SerializeField] private MonoBehaviour scriptCañon;      // Script que controla el cañón
+    [Header("Enemigos")]
+    [SerializeField] private Transform contenedorDeEnemigos;
+
+    [Header("Canvas")]
+    [SerializeField] private GameObject endLevelWin;   // arrástrale "End level win"
+    [SerializeField] private GameObject endLevelLose;  // arrástrale "End level lose"
+
+    [Header("Control del cañón")]
+    [SerializeField] private MonoBehaviour scriptCañon;
 
     private bool alreadyTriggered = false;
-    private bool soundIsPlaying = false;
 
     void Start()
     {
-        if (succesCanva != null)
-            succesCanva.gameObject.SetActive(false);
+        if (endLevelWin != null) endLevelWin.SetActive(false);
+        if (endLevelLose != null) endLevelLose.SetActive(false);
     }
 
     void Update()
@@ -23,14 +27,7 @@ public class EnemigosHandler : MonoBehaviour
 
         if (TodosLosEnemigosMuertos())
         {
-            alreadyTriggered = true;
-
-            if (scriptCañon != null)
-                scriptCañon.enabled = false; // 🔥 desactiva el cañón
-
-            succesCanva.gameObject.SetActive(true);
-            Time.timeScale = 0f;
-
+            ActivarVictoria();
         }
     }
 
@@ -42,5 +39,27 @@ public class EnemigosHandler : MonoBehaviour
                 return false;
         }
         return true;
+    }
+
+    private void ActivarVictoria()
+    {
+        alreadyTriggered = true;
+
+        if (scriptCañon != null) scriptCañon.enabled = false;
+        if (endLevelWin != null) endLevelWin.SetActive(true);
+
+        Time.timeScale = 0f;
+    }
+
+    public void ActivarDerrota()
+    {
+        if (alreadyTriggered) return;
+
+        alreadyTriggered = true;
+
+        if (scriptCañon != null) scriptCañon.enabled = false;
+        if (endLevelLose != null) endLevelLose.SetActive(true);
+
+        Time.timeScale = 0f;
     }
 }
