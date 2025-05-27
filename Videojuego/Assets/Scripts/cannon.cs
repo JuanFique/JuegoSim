@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+
+
 
 public class cañon : MonoBehaviour
 {
@@ -42,7 +45,9 @@ public class cañon : MonoBehaviour
     }
     void Update()
 {
-    Vector2 mouseWorldPoint = cam.ScreenToWorldPoint(Input.mousePosition);
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
+        Vector2 mouseWorldPoint = cam.ScreenToWorldPoint(Input.mousePosition);
     Vector2 direction = mouseWorldPoint - (Vector2)SpawnPoint.position;
     float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
     angle = Mathf.Clamp(angle, 0f, 90f);
